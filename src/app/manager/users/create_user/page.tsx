@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi } from "date-fns/locale";
 import { isValidVietnamesePhoneNumber } from "@/utils/validate";
-import ErrorModal from "@/components/modal/ErrorModal";
+import ErrorModal from "@/components/common/modal/ErrorModal";
 
 export default function page() {
   const [image, setImage] = useState<string>("/utcLogo.png");

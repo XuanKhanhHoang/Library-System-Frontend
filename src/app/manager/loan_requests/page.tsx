@@ -1,8 +1,8 @@
 "use client";
 
-import AppDatePicker from "@/components/datePicker/DatePicker";
-import WarningModal from "@/components/modal/WarningModal";
-import Pagination from "@/components/pagination/pagination";
+import AppDatePicker from "@/components/common/datePicker/DatePicker";
+import WarningModal from "@/components/common/modal/WarningModal";
+import Pagination from "@/components/common/pagination/pagination";
 import useDebounce from "@/hooks/useDebounce";
 import { customFormatDate, isValidDate } from "@/utils/date";
 import Link from "next/link";

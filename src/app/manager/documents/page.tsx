@@ -1,8 +1,8 @@
 "use client";
 
 import ClickOutside from "@/components/manager/ClickOutside";
-import WarningModal from "@/components/modal/WarningModal";
-import Pagination from "@/components/pagination/pagination";
+import WarningModal from "@/components/common/modal/WarningModal";
+import Pagination from "@/components/common/pagination/pagination";
 import useDebounce from "@/hooks/useDebounce";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";

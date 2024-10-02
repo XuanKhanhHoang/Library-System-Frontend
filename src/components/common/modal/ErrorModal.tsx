@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import ClickOutside from "../manager/ClickOutside";
+import ClickOutside from "../../manager/ClickOutside";
 
 export default function ErrorModal({
   title,

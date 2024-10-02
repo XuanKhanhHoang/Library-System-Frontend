@@ -1,8 +1,8 @@
 "use client";
 
-import AppDatePicker from "@/components/datePicker/DatePicker";
+import AppDatePicker from "@/components/common/datePicker/DatePicker";
 import ClickOutside from "@/components/manager/ClickOutside";
-import Pagination from "@/components/pagination/pagination";
+import Pagination from "@/components/common/pagination/pagination";
 import useDebounce from "@/hooks/useDebounce";
 import useDidMountEffect from "@/hooks/useDidMountEffect";
 import { customFormatDate, isValidDate } from "@/utils/date";
