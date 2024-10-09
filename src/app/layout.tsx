@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 import { headers } from "next/headers";
 import UserLayout from "@/components/user/layout/UserLayout";
-
+import UserLayout1 from "@/components/user/layout/UserLayout1";
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
@@ -30,8 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {pathname !== "/login" && <UserLayout />}
+        {pathname !== "/login" && <UserLayout /> }
         <div className="max-w-screen-xl mx-auto">{children}</div>
+        {pathname !== "/login" && <UserLayout1 />}
       </body>
     </html>
   );
