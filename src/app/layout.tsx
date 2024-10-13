@@ -40,9 +40,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextAuthProvider>
           <ToastContainer autoClose={800} />
-        {pathname !== "/login" && <UserLayout /> }
+          {pathname !== "/login" && <UserLayout />}
           <div className="max-w-screen-xl mx-auto">{children}</div>
-        {pathname !== "/login" && <UserLayout1 />
+          {pathname !== "/login" && <UserLayout1 />}
         </NextAuthProvider>
       </body>
     </html>
