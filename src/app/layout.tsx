@@ -7,6 +7,9 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import UserLayout from "@/components/user/layout/UserLayout";
 import UserLayout1 from "@/components/user/layout/UserLayout1";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { NextAuthProvider } from "@/components/NextAuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
@@ -24,15 +27,23 @@ export default function RootLayout({
   if (pathname.startsWith("/manager"))
     return (
       <html lang="en">
-        <body>{children}</body>
+        <body suppressHydrationWarning={true}>
+          <NextAuthProvider>
+            <ToastContainer autoClose={800} />
+            {children}
+          </NextAuthProvider>
+        </body>
       </html>
     );
   return (
     <html lang="en">
       <body className={inter.className}>
+        <NextAuthProvider>
+          <ToastContainer autoClose={800} />
         {pathname !== "/login" && <UserLayout /> }
-        <div className="max-w-screen-xl mx-auto">{children}</div>
-        {pathname !== "/login" && <UserLayout1 />}
+          <div className="max-w-screen-xl mx-auto">{children}</div>
+        {pathname !== "/login" && <UserLayout1 />
+        </NextAuthProvider>
       </body>
     </html>
   );
