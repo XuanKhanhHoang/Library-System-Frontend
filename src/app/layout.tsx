@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 import { headers } from "next/headers";
 import UserLayout from "@/components/user/layout/UserLayout";
+import UserLayout1 from "@/components/user/layout/UserLayout1";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { NextAuthProvider } from "@/components/NextAuthProvider";
@@ -39,8 +40,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextAuthProvider>
           <ToastContainer autoClose={800} />
-          {pathname !== "/login" && <UserLayout />}
+        {pathname !== "/login" && <UserLayout /> }
           <div className="max-w-screen-xl mx-auto">{children}</div>
+        {pathname !== "/login" && <UserLayout1 />
         </NextAuthProvider>
       </body>
     </html>
