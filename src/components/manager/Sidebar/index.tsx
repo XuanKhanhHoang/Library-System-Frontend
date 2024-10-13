@@ -45,7 +45,14 @@ const menuGroups = [
         ),
         label: "Dashboard",
         route: "/manager",
-        children: [{ label: "eCommerce", route: "/manager" }],
+        children: [
+          { label: "Biểu đồ tài liệu mỗi thể loại", route: "/manager" },
+          { label: "Biểu đồ muợn sách", route: "/manager/loan_per_day_chart" },
+          {
+            label: "Biểu đồ người dùng mỗi chức danh",
+            route: "/manager/user_per_job_title",
+          },
+        ],
       },
       {
         icon: (
@@ -339,12 +346,8 @@ const menuGroups = [
             </defs>
           </svg>
         ),
-        label: "Authentication",
-        route: "#",
-        children: [
-          { label: "Sign In", route: "/manager/auth/signin" },
-          { label: "Sign Up", route: "/manager/auth/signup" },
-        ],
+        label: "Đăng Xuất",
+        route: "/manager/logout",
       },
     ],
   },

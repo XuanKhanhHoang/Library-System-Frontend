@@ -6,7 +6,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 import { headers } from "next/headers";
 import UserLayout from "@/components/user/layout/UserLayout";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { NextAuthProvider } from "@/components/NextAuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
@@ -24,14 +26,22 @@ export default function RootLayout({
   if (pathname.startsWith("/manager"))
     return (
       <html lang="en">
-        <body>{children}</body>
+        <body suppressHydrationWarning={true}>
+          <NextAuthProvider>
+            <ToastContainer autoClose={800} />
+            {children}
+          </NextAuthProvider>
+        </body>
       </html>
     );
   return (
     <html lang="en">
       <body className={inter.className}>
-        {pathname !== "/login" && <UserLayout />}
-        <div className="max-w-screen-xl mx-auto">{children}</div>
+        <NextAuthProvider>
+          <ToastContainer autoClose={800} />
+          {pathname !== "/login" && <UserLayout />}
+          <div className="max-w-screen-xl mx-auto">{children}</div>
+        </NextAuthProvider>
       </body>
     </html>
   );
