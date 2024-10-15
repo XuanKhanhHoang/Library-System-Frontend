@@ -5,57 +5,143 @@ import React, { useState } from "react";
 import Image from 'next/image';
 import { Search } from 'lucide-react';
 import { User } from 'lucide-react';
-
+import { Star } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 interface HeaderProps {
   sessionProps: boolean;
   onLogout: () => void;
   userName?: string;
 }
 
+
+  const categories = [
+    { name: 'Hài hước', link: '/categories/comedy' },
+    { name: 'Lãng mạn', link: '/categories/romance' },
+    { name: 'Kinh dị', link: '/categories/horror' },
+    { name: 'Truyền thông', link: '/categories/media' },
+    { name: 'Nấu ăn', link: '/categories/cooking' },
+    { name: 'Trinh thám', link: '/categories/detective' },
+    { name: 'Khoa học viễn tưởng', link: '/categories/sci-fi' },
+    { name: 'Lịch sử', link: '/categories/history' },
+    { name: 'Tự truyện', link: '/categories/biography' },
+    { name: 'Kỹ năng sống', link: '/categories/life-skills' },
+  ]
+
+const books = [
+  {
+    title: "Nightshade",
+    author: "Andrea Cremer",
+    color: "bg-indigo-600",
+    textColor: "text-white",
+    buttonColor: "bg-indigo-500",
+    cover: "/placeholder.svg?height=300&width=200"
+  },
+  {
+    title: "History of Modern Architecture",
+    author: "Richard Phillips",
+    color: "bg-emerald-700",
+    textColor: "text-white",
+    buttonColor: "bg-emerald-600",
+    cover: "/placeholder.svg?height=300&width=200"
+  },
+  {
+    title: "The Happy Lemon",
+    author: "Kurt Vonnegut",
+    color: "bg-yellow-200",
+    textColor: "text-gray-800",
+    buttonColor: "bg-yellow-300",
+    cover: "/placeholder.svg?height=300&width=200"
+  }
+]
 const Header: React.FC<HeaderProps> = ({ sessionProps, onLogout, userName = 'User' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
   return (
-    <nav className="bg-blue-900 border-b border-amber-50 w-full">
-      <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto px-4 py-2.5">
+    <nav className="bg-white text-indigo-600 border-b border-amber-50 w-full">
+      <div className="flex flex-wrap items-center max-w-screen-xl mx-auto  px-4 py-2.5  ">
+       
         <Link href="/" className="flex flex-nowrap items-center p-2">
           <img src="/utcLogo.png" alt="UTC Logo" className="h-10 w-10 mr-2" />
-          <span className="font-medium text-amber-50">Trung tâm thư viện UTC</span>
+          <span className="font-medium">Trung tâm thư viện UTC</span>
         </Link>
 
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="text-amber-50 hover:text-white">Trang chủ</Link>
-          <Link href="/gioi-thieu" className="text-amber-50 hover:text-white">Giới thiệu</Link>
-          <Link href="/kho-sach" className="text-amber-50 hover:text-white">Kho sách</Link>
-          <Link href="/dich-vu" className="text-amber-50 hover:text-white">Dịch vụ</Link>
-          
-          {sessionProps ? (
-            <>
-              <div className="relative ml-4">
-                <div 
-                  className="flex items-center text-amber-50 cursor-pointer"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+        
+          <ul className="flex items-center space-x-6 pl-4">
+            <li>
+              <Link href="/" className=" text-blue-600  transition-colors">
+                Trang chủ
+              </Link>
+            </li>
+            <li className="relative ">
+              <button
+                className="flex items-center text-gray-800 hover:text-blue-600 transition-colors "
+                onMouseEnter={() => setIsMegaMenuOpen(true)}
+                onMouseLeave={() => setIsMegaMenuOpen(false)}
+              >
+                Thể loại
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {isMegaMenuOpen && (
+                <div
+                  className="absolute left-0  w-screen max-w-4xl bg-white rounded-md shadow-lg py-6 px-4 z-10"
+                  onMouseEnter={() => setIsMegaMenuOpen(true)}
+                  onMouseLeave={() => setIsMegaMenuOpen(false)}
                 >
-                  <User size={24} className="mr-2" />
-                  <span className="font-medium">Nguyễn An</span>
-                </div>
-
-                {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
-                    <ul className="py-1">
-                      <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Thông tin tài khoản</li>
-                      <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Sách đã thuê</li>
-                      <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Sách đang thuê</li>
-                      <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer" onClick={onLogout}>Đăng xuất</li>
-                    </ul>
+                  <div className="grid grid-cols-3 gap-4">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.name}
+                        href={category.link}
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 rounded"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
+            </li>
+            <li>
+              <Link href="/shop" className="text-gray-800 hover:text-blue-600 transition-colors">
+                Hướng dẫn
+              </Link>
+            </li>
+            <li>
+              <Link href="/news" className="text-gray-800 hover:text-blue-600 transition-colors">
+                Tin tức
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="text-gray-800 hover:text-blue-600 transition-colors">
+                Liên hệ
+              </Link>
+            </li>
+          </ul>
+          {sessionProps ? (
+            <div className="relative ml-auto text-indigo-600 ">
+              <div 
+                className="flex items-center  cursor-pointer"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <User size={24} className="mr-2" />
+                <span className="font-medium">Nguyễn An</span>
               </div>
-            </>
+
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10 ">
+                  <ul className="py-1">
+                    <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Thông tin tài khoản</li>
+                    <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Sách đã thuê</li>
+                    <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Sách đang thuê</li>
+                    <li className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer" onClick={onLogout}>Đăng xuất</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           ) : (
             <Link
               href="/auth/login"
-              className="p-2 flex items-center bg-red-700 hover:bg-red-600 rounded-md transition duration-300 text-amber-50"
+              className="p-2 flex items-center bg-red-700 hover:bg-red-600 rounded-md transition duration-300 text-"
             >
               <svg
                 className="w-6 h-6 mr-1"
@@ -71,8 +157,9 @@ const Header: React.FC<HeaderProps> = ({ sessionProps, onLogout, userName = 'Use
               </svg>
               <span className="font-medium">Đăng nhập</span>
             </Link>
-          )}
-        </div>
+          )}    
+          
+        
       </div>
     </nav>
   );
@@ -127,14 +214,55 @@ export default function UserLayout() {
       
       <div className="relative w-full h-64">
         <Image
-          src="/bannerutc.png"
+          src="/bybinh1.jpg"
           alt="Library bookshelves and students"
           layout="fill"
           objectFit="cover"
           className="rounded-lg"
         />
       </div>
-    
+      <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-700">THIS WEEKS FEATURED BOOKS</h2>
+        <div className="flex space-x-1">
+          <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+          <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {books.map((book, index) => (
+          <div key={index} className={`${book.color} rounded-lg p-6 flex flex-col justify-between`}>
+            <div>
+              <h3 className={`text-2xl font-bold mb-2 ${book.textColor}`}>{book.title}</h3>
+              <p className={`text-sm mb-2 ${book.textColor}`}>by: {book.author}</p>
+              <div className="flex mb-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className={`w-4 h-4 ${book.textColor} opacity-30`} />
+                ))}
+                <span className={`ml-2 text-sm ${book.textColor}`}>0 Ratings</span>
+              </div>
+              <p className={`text-sm mb-4 ${book.textColor}`}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+              </p>
+            </div>
+            <div className="flex justify-between items-end">
+              <button className={`${book.buttonColor} ${book.textColor} px-4 py-2 rounded-full text-sm font-semibold`}>
+                View in Book Store →
+              </button>
+              <div className="w-24 h-36 relative">
+                <Image
+                  src={book.cover}
+                  alt={`Cover of ${book.title}`}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="bg-gray-50 p-8 rounded-lg mb-12">
           <h2 className="text-2xl font-bold text-red-500 mb-6">TÌM KIẾM</h2>
