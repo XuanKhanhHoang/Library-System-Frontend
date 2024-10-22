@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ sessionProps, onLogout, userName = 'Use
         </Link>
 
         
-          <ul className="flex items-center space-x-6 pl-4">
+          <ul className="flex items-center space-x-6 pl-4 font-medium">
             <li>
               <Link href="/" className=" text-blue-600  transition-colors">
                 Trang chủ
@@ -118,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({ sessionProps, onLogout, userName = 'Use
             </li>
           </ul>
           {sessionProps ? (
-            <div className="relative ml-auto text-indigo-600 ">
+            <div className="relative ml-auto text-indigo-600 font-medium ">
               <div 
                 className="flex items-center  cursor-pointer"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
