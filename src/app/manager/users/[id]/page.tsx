@@ -2,6 +2,10 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import BackButton from "@/components/common/backButton/BackButton";
 import { GenerateBackendURL } from "@/utils/backendUrl";
 import { customFormatDate } from "@/utils/date";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -47,7 +51,13 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="w-3/12">
             <div className="bg-white p-3 border-t-4 border-green-400">
               <img
-                src={user.avatar || "/utcLogo.png"}
+                src={
+                  user.avatar
+                    ? getWebViewLinkFromDiveId(
+                        extractFileIdFromDiveLink(user.avatar) as string
+                      )
+                    : "/utcLogo.png"
+                }
                 alt=""
                 className="h-[200px] mx-auto"
               />

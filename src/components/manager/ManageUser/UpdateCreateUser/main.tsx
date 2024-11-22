@@ -5,9 +5,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import { vi } from "date-fns/locale";
 import { isValidVietnamesePhoneNumber } from "@/utils/validate";
 import { GenerateBackendURL } from "@/utils/backendUrl";
-import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 
 export type UserFullDetailProps = {
   id_user?: number;
@@ -50,7 +53,11 @@ export default function UpdateEditUser({
     birth_date: new Date(),
   };
   const [image, setImage] = useState<string>(
-    userProp?.avatar || "/utcLogo.png"
+    userProp?.avatar
+      ? getWebViewLinkFromDiveId(
+          extractFileIdFromDiveLink(userProp.avatar) as string
+        )
+      : "/utcLogo.png"
   );
   const [user, setUser] = useState<UserFullDetail>(
     userProp
@@ -70,6 +77,7 @@ export default function UpdateEditUser({
   const isCheck = useRef(false);
   const router = useRouter();
   const [rePassword, setRePassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setImage(URL.createObjectURL(event.target.files[0]));
@@ -77,7 +85,9 @@ export default function UpdateEditUser({
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading) return;
     if (isInValid()) return toast.error("Vui lòng nhập đúng thông tin");
+    setIsLoading(true);
     let frm = new FormData();
 
     Object.entries(user).forEach(([key, value]) => {
@@ -90,10 +100,6 @@ export default function UpdateEditUser({
         }
       }
     });
-    frm.forEach((val, k) => {
-      console.log(k + " " + val);
-    });
-
     if (image != "/utcLogo.png") {
       let fileInput = document.getElementById("avatar") as HTMLInputElement;
       if (fileInput && fileInput.files) {
@@ -124,11 +130,16 @@ export default function UpdateEditUser({
         return;
       } else if (res.status == 409) {
         toast.error("User Name hoặc số điện thoại đã tồn tại !");
+        setIsLoading(false);
         return;
-      } else toast.error("Có lỗi xảy ra !");
+      } else {
+        setIsLoading(false);
+        toast.error("Có lỗi xảy ra !");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Có lỗi xảy ra !");
+      setIsLoading(false);
     }
   };
   const isInValid = () => {

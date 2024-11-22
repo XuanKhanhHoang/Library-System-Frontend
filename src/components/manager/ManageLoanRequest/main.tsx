@@ -583,7 +583,6 @@ export default function ManageLoanRequest({
         />
       )}
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/loan_requests?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}

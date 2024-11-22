@@ -18,6 +18,7 @@ export default function ViewRequest({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAccept = async () => {
+    if (isLoading) return toast.warning("Vui lòng chờ ...");
     setIsLoading(true);
     try {
       let res = await fetch(GenerateBackendURL("loan-request/accept"), {

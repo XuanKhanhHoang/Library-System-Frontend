@@ -40,7 +40,6 @@ export const options: NextAuthOptions = {
             exp: string;
           };
           user_info: userGeneral;
-          role: string;
         };
         return {
           ...user,

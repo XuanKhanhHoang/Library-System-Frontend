@@ -510,7 +510,6 @@ export default function ManageLoanReturnTransaction({
       </div>
 
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/loan_return_documents?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}

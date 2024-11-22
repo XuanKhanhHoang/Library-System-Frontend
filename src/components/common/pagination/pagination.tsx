@@ -4,29 +4,29 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 export default function Pagination({
-  itemsPerPage,
+  handlePageClick,
   totalPage,
   rootDirection = "/",
   forcePage = 1,
   scrollTop = true,
 }: {
-  itemsPerPage?: number;
+  handlePageClick?: (event: { selected: number } & any) => void;
   totalPage: number;
   rootDirection: string;
   forcePage?: number;
   scrollTop?: boolean;
 }) {
   const router = useRouter();
-  // Invoke when user click to request another page.
-  const handlePageClick = (event: any) => {
-    router.push(
-      rootDirection +
-        (rootDirection.includes("?") ? "&" : "?") +
-        "page=" +
-        (event.selected + 1),
-      { scroll: scrollTop }
-    );
-  };
+  if (handlePageClick == undefined)
+    handlePageClick = (event: any) => {
+      router.push(
+        rootDirection +
+          (rootDirection.includes("?") ? "&" : "?") +
+          "page=" +
+          (event.selected + 1),
+        { scroll: scrollTop }
+      );
+    };
 
   return (
     <ReactPaginate

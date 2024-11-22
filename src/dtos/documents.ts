@@ -1,4 +1,7 @@
-export interface Document {
+export interface Document extends DocumentWithoutVariant {
+  variants: Variant[];
+}
+export interface DocumentWithoutVariant {
   document_id: number;
   document_name: string;
   id_author: number;
@@ -7,7 +10,18 @@ export interface Document {
   author: Author;
   publisher: Publisher;
   document_ref_category: DocumentRefCategory[];
-  variants: Variant[];
+  image?: { image: string; id: number }[];
+}
+export interface PreviewDocumentWithoutVariant {
+  document_id: number;
+  document_name: string;
+  id_author: number;
+  id_publisher: number;
+  description: any;
+  author: Author;
+  publisher: Publisher;
+  document_ref_category: DocumentRefCategory[];
+  image?: string;
 }
 // export interface DocumentIncludePurchase {
 //   document_id: number;

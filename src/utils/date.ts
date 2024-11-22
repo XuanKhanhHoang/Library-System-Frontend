@@ -11,3 +11,13 @@ export function isValidDate(dateString: string): boolean {
   const date = new Date(dateString);
   return !isNaN(date.getTime());
 }
+export function increaseDayFromNow(increaseDay: number): Date {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + increaseDay);
+  return currentDate;
+}
+export function getFutureDate(months: 3 | 6 | 9 | 12 | 24): Date {
+  const currentDate = new Date();
+  currentDate.setMonth(currentDate.getMonth() + months);
+  return currentDate;
+}

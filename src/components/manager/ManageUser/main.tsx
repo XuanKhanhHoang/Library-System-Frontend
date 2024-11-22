@@ -11,6 +11,10 @@ import { useSession } from "next-auth/react";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 
 type getUserResponse = {
   total_page: number;
@@ -452,7 +456,13 @@ export default function ManageUser({
                     >
                       <img
                         className="w-10 h-10 rounded-full"
-                        src="/utcLogo.png"
+                        src={
+                          item?.avatar
+                            ? getWebViewLinkFromDiveId(
+                                extractFileIdFromDiveLink(item.avatar) as string
+                              )
+                            : "/utcLogo.png"
+                        }
                       />
                     </td>
                     <td colSpan={25} className="px-6 py-3 w-1/4">
@@ -613,7 +623,6 @@ export default function ManageUser({
         />
       )}
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/users?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}
