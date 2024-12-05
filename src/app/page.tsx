@@ -1,107 +1,77 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
-import React, { useRef, useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { bookList } from "@/data/data";
-import Link from "next/link";
+import HomeCarousel from "@/components/user/home/carousel/HomeCarousel";
+import CardSlider from "@/components/user/home/CardSlider/CardSlider";
+import { GenerateBackendURL } from "@/utils/backendUrl";
+import {
+  GetDocumentsResponse,
+  PreviewDocument,
+} from "./manager/documents/page";
 
-export default function Home() {
-  var settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 4,
-    initialSlide: 0,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
-  const object = bookList;
+export default async function Home() {
+  let newDocuments: PreviewDocument[] | undefined,
+    learningDocuments: PreviewDocument[] | undefined,
+    historicalDocuments: PreviewDocument[] | undefined;
+  try {
+    [newDocuments, learningDocuments, historicalDocuments] = await Promise.all([
+      fetch(
+        "http://localhost:8081/api/v1/document/get_preview_documents?limit=10&sort_by_col=document_id&sort_type=desc",
+        { cache: "no-store" }
+      )
+        .then((res) => res.json())
+        .then((res: GetDocumentsResponse) => res.data),
+      fetch(
+        "http://localhost:8081/api/v1/document/get_preview_documents?limit=10&category_ids=3",
+        { cache: "no-store" }
+      )
+        .then((res) => res.json())
+        .then((res: GetDocumentsResponse) => res.data),
+      fetch(
+        "http://localhost:8081/api/v1/document/get_preview_documents?limit=10&category_ids=2",
+        { cache: "no-store" }
+      )
+        .then((res) => res.json())
+        .then((res: GetDocumentsResponse) => res.data),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
   return (
     <>
-      <div className="slider-container">
-        <div className="mt-[20px] mb-[10px]">
-          <h1 className="">Trending Book</h1>
+      <HomeCarousel />
+      <div className="slider-container p-5 rounded-lg">
+        <div className="mt-5 mb-2">
+          <div className="bg-[#f9f5f0] py-2 px-4 flex items-center">
+            <div className="w-1 h-6 bg-gray-700 mr-3"></div>
+            <h2 className="text-red-700 font-bold text-lg uppercase">
+              Sách mới
+            </h2>
+          </div>
         </div>
-        <Slider {...settings}>
-          {object.map((i, index) => (
-            <Link
-              href="/book-deltail"
-              className="w-[100px] h-[100px] px-3"
-              key={index}
-            >
-              <div>
-                <img src={i.thumbnail} alt="hello" />
-              </div>
-              <div className="text-center mt-[10px]">
-                <h1>{i.title}</h1>
-                <h2>{i.publish_year}</h2>
-              </div>
-            </Link>
-          ))}
-        </Slider>
+        <CardSlider data={newDocuments || []} />
+        <hr className="border-white my-4" />
       </div>
-      <div className="slider-container">
-        <div className="mt-[20px] mb-[10px]">
-          <h1 className="">Classic Book</h1>
+      <div className="slider-container p-5 rounded-lg">
+        <div className="mt-5 mb-2">
+          <div className="bg-[#f9f5f0] py-2 px-4 flex items-center">
+            <div className="w-1 h-6 bg-gray-700 mr-3"></div>
+            <h2 className="text-red-700 font-bold text-lg uppercase">
+              Văn học nước ngoài
+            </h2>
+          </div>
         </div>
-        <Slider {...settings}>
-          {object.map((i, index) => (
-            <Link href="" className="w-[100px] h-[100px] px-3" key={index}>
-              <div>
-                <img src={i.thumbnail} alt="hello" />
-              </div>
-              <div className="text-center mt-[10px]">
-                <h1>{i.title}</h1>
-                <h2>{i.publish_year}</h2>
-              </div>
-            </Link>
-          ))}
-        </Slider>
+        <CardSlider data={learningDocuments || []} />
+        <hr className="border-white my-4" />
       </div>
-      <div className="slider-container">
-        <div className="mt-[20px] mb-[10px]">
-          <h1 className="">Books We Love</h1>
+      <div className="slider-container p-5 rounded-lg">
+        <div className="mt-5 mb-2">
+          <div className="bg-[#f9f5f0] py-2 px-4 flex items-center">
+            <div className="w-1 h-6 bg-gray-700 mr-3"></div>
+            <h2 className="text-red-700 font-bold text-lg uppercase">
+              Văn học Việt Nam
+            </h2>
+          </div>
         </div>
-        <Slider {...settings}>
-          {object.map((i, index) => (
-            <Link href="" className="w-[100px] h-[100px] px-3" key={index}>
-              <div>
-                <img src={i.thumbnail} alt="hello" />
-              </div>
-              <div className="text-center mt-[10px]">
-                <h1>{i.title}</h1>
-                <h2>{i.publish_year}</h2>
-              </div>
-            </Link>
-          ))}
-        </Slider>
+        <CardSlider data={historicalDocuments || []} />
+        <hr className="border-white my-4" />
       </div>
     </>
   );

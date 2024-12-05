@@ -376,7 +376,6 @@ export default function ManageDocuments({
         />
       )}
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/documents?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}

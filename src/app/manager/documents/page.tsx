@@ -1,37 +1,36 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import ManageDocuments from "@/components/manager/ManageDocument/main";
+import { Category } from "@/dtos/documents";
 import { GenerateBackendURL } from "@/utils/backendUrl";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 export interface GetDocumentsResponse {
-  data: {
-    document_id: number;
-    document_name: string;
-    id_author: number;
-    id_publisher: number;
-    description: string;
-    author: {
-      id_author: number;
-      author_name: string;
-    };
-    publisher: {
-      id_publisher: number;
-      publisher_name: string;
-    };
-
-    document_ref_category: {
-      document_id: number;
-      category_id: number;
-      category: {
-        id_category: number;
-        category_name: string;
-      };
-    }[];
-  }[];
+  data: PreviewDocument[];
   total_page: number;
 }
+export interface PreviewDocument {
+  document_id: number;
+  document_name: string;
+  id_author: number;
+  id_publisher: number;
+  description: string;
+  image: string;
+  author: {
+    id_author: number;
+    author_name: string;
+  };
+  publisher: {
+    id_publisher: number;
+    publisher_name: string;
+  };
 
+  document_ref_category: {
+    document_id: number;
+    category_id: number;
+    category: Category;
+  }[];
+}
 export type documentsSearchParams = {
   page?: string;
   search_term?: string;
@@ -97,12 +96,11 @@ export default async function page({
   let data: GetDocumentsResponse | undefined;
   try {
     let res = await fetch(
-      GenerateBackendURL(
-        "document/get_preview_documents?" + severSearchPr.toString()
-      ),
+      "http://localhost:8081/api/v1/document/get_preview_documents?" +
+        severSearchPr.toString(),
       {
         headers: {
-          Authorization: "Bearer " + session!.user!.access_token.token,
+          Authorization: "Bearer " + session?.user?.access_token.token,
         },
         cache: "no-store",
       }

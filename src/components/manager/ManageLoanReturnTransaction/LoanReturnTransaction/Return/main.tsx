@@ -314,7 +314,7 @@ export default function ReturnDocument({
           className={`
                p-3 text-sm font-medium text-white rounded bg-green-600 mx-auto block mt-3`}
         >
-          {isLoading ? "Loading..." : "Tiến hành cho muợn sách"}
+          {isLoading ? "Loading..." : "Tiến hành cho trả sách"}
         </button>
       </div>
     </>

@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function page() {
   const router = useRouter();
@@ -8,8 +9,15 @@ export default function page() {
   return (
     <form
       className="max-w-64 mx-auto"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        let ck = await fetch(
+          `http://localhost:8081/api/v1/document/get_document?document_id=${id}`
+        ).then(async (res) => {
+          if (res.ok) return true;
+          return false;
+        });
+        if (!ck) return toast.error("Mã sách ko tồn tại");
         router.push(`./new_variant/${id}`);
       }}
     >

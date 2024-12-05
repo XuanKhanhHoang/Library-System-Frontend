@@ -2,6 +2,10 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import BackButton from "@/components/common/backButton/BackButton";
 import { GenerateBackendURL } from "@/utils/backendUrl";
 import { customFormatDate } from "@/utils/date";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -11,7 +15,7 @@ export default async function page({ params }: { params: { id: string } }) {
   let accessToken = (await getServerSession(options))!.user!.access_token.token;
   try {
     let res = await fetch(
-      GenerateBackendURL("user/get_user" + "?user_id=" + params.id),
+      "http://localhost:8081/api/v1/user/get_user" + "?user_id=" + params.id,
       {
         headers: {
           Authorization: "Bearer " + accessToken,
@@ -39,6 +43,7 @@ export default async function page({ params }: { params: { id: string } }) {
         id_major: number;
         major_name: string;
       };
+      email: string;
     } = await res.json();
     return (
       <>
@@ -47,7 +52,13 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="w-3/12">
             <div className="bg-white p-3 border-t-4 border-green-400">
               <img
-                src={user.avatar || "/utcLogo.png"}
+                src={
+                  user.avatar
+                    ? getWebViewLinkFromDiveId(
+                        extractFileIdFromDiveLink(user.avatar) as string
+                      )
+                    : "/utcLogo.png"
+                }
                 alt=""
                 className="h-[200px] mx-auto"
               />
@@ -98,6 +109,23 @@ export default async function page({ params }: { params: { id: string } }) {
                 className={` bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
                 placeholder="User Name"
                 defaultValue={user.user_name}
+                readOnly
+              />
+            </div>
+            <div className="my-2">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Email
+              </label>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                className={` bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
+                placeholder="Email"
+                defaultValue={user.email}
                 readOnly
               />
             </div>

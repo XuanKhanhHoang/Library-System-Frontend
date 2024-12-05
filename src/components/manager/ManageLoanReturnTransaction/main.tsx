@@ -23,7 +23,7 @@ export type loanReturnSearchParams = {
     | "reader_name"
     | "id";
   is_returned: string;
-  is_punished: string;
+  is_punished?: string;
 };
 export default function ManageLoanReturnTransaction({
   access_token,
@@ -199,10 +199,9 @@ export default function ManageLoanReturnTransaction({
                           `/manager/loan_return_documents?${searchPr.toString()}`
                         );
                       }}
-                      value={status}
+                      value={status || ""}
                     >
                       <option value="">Không chọn</option>
-
                       <option value="false">Chưa trả</option>
                       <option value="true">Đã trả</option>
                     </select>
@@ -220,8 +219,9 @@ export default function ManageLoanReturnTransaction({
                           `/manager/loan_return_documents?${searchPr.toString()}`
                         );
                       }}
-                      value={is_punished}
+                      value={is_punished || ""}
                     >
+                      <option value="">Không chọn </option>
                       <option value="true">Có </option>
                       <option value="false">Không</option>
                     </select>
@@ -459,7 +459,9 @@ export default function ManageLoanReturnTransaction({
                     <span>{customFormatDate(new Date(item.create_at))}</span>
                   </td>
                   <td className="px-3 py-4">
-                    <span>{customFormatDate(new Date(item.due_date))}</span>
+                    <span>
+                      {customFormatDate(new Date(item.due_date), false)}
+                    </span>
                   </td>
                   <td className="px-3 py-4">
                     <span>
@@ -510,7 +512,6 @@ export default function ManageLoanReturnTransaction({
       </div>
 
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/loan_return_documents?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}

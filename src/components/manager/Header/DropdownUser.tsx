@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "../ClickOutside";
 import { signOut, useSession } from "next-auth/react";
+import { getWebViewLinkFromWebContentLink } from "@/utils/handleImage";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,14 +25,12 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <Image
-            width={112}
-            height={112}
-            src={data?.user?.user_info.avatar || "/utcLogo.png"}
-            style={{
-              width: "auto",
-              height: "auto",
-            }}
+          <img
+            src={
+              getWebViewLinkFromWebContentLink(data?.user?.user_info.avatar) ||
+              "/utcLogo.png"
+            }
+            className="h-12 w-12"
             alt="User"
           />
         </span>

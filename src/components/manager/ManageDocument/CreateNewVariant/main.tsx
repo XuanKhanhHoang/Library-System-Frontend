@@ -95,6 +95,7 @@ export default function CreateNewVariant({
           <h1 className="text-lg w-1/2 font-bold">Ngày Thêm:</h1>
           <AppDatePicker
             onChange={(date) => {
+              if (!date) return;
               setCreateAt(date);
             }}
             dateConfig={{
@@ -171,6 +172,7 @@ export default function CreateNewVariant({
           <h1 className="text-lg w-1/2 font-bold">Ngày Xuất Bản:</h1>
           <AppDatePicker
             onChange={(date) => {
+              if (!date) return;
               setVariant({ ...variant, published_date: date });
             }}
             dateConfig={{

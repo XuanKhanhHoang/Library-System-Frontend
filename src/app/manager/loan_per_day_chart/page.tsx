@@ -30,10 +30,8 @@ export default async function page({
   const session = await getServerSession(options);
   try {
     let res = await fetch(
-      GenerateBackendURL(
-        "loan-return-transaction/get_number_of_loan_transaction_day_by_day?" +
-          searchPr.toString()
-      ),
+      "http://localhost:8081/api/v1/loan-return-transaction/get_number_of_loan_transaction_day_by_day?" +
+        searchPr.toString(),
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,

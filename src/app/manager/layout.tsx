@@ -31,7 +31,12 @@ export default async function RootLayout({
       session?.user?.role != librarianRole)
   )
     return redirect("/manager/login");
-  if (pathname == "/manager/login" && session) return redirect("/manager");
+  if (
+    pathname == "/manager/login" &&
+    session &&
+    session.user?.role == librarianRole
+  )
+    return redirect("/manager");
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       <Suspense fallback={<Loader />}>

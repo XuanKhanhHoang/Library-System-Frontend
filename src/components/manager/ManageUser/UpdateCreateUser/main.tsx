@@ -3,11 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi } from "date-fns/locale";
-import { isValidVietnamesePhoneNumber } from "@/utils/validate";
+import { isValidEmail, isValidVietnamesePhoneNumber } from "@/utils/validate";
 import { GenerateBackendURL } from "@/utils/backendUrl";
-import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 
 export type UserFullDetailProps = {
   id_user?: number;
@@ -20,6 +23,7 @@ export type UserFullDetailProps = {
   birth_date: Date;
   is_valid: boolean;
   avatar?: string;
+  email: string;
 };
 type UserFullDetail = {
   name: string;
@@ -31,6 +35,7 @@ type UserFullDetail = {
   id_major: number;
   id_job_title: number;
   birth_date: Date;
+  email: string;
 };
 export default function UpdateEditUser({
   accessToken,
@@ -48,9 +53,14 @@ export default function UpdateEditUser({
     phone_number: "",
     user_name: "",
     birth_date: new Date(),
+    email: "",
   };
   const [image, setImage] = useState<string>(
-    userProp?.avatar || "/utcLogo.png"
+    userProp?.avatar
+      ? getWebViewLinkFromDiveId(
+          extractFileIdFromDiveLink(userProp.avatar) as string
+        )
+      : "/utcLogo.png"
   );
   const [user, setUser] = useState<UserFullDetail>(
     userProp
@@ -64,12 +74,14 @@ export default function UpdateEditUser({
           user_name: userProp.user_name,
           pass_word: "",
           is_valid: userProp.is_valid,
+          email: userProp.email,
         }
       : defaultUser
   );
   const isCheck = useRef(false);
   const router = useRouter();
   const [rePassword, setRePassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setImage(URL.createObjectURL(event.target.files[0]));
@@ -77,7 +89,9 @@ export default function UpdateEditUser({
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading) return;
     if (isInValid()) return toast.error("Vui lòng nhập đúng thông tin");
+    setIsLoading(true);
     let frm = new FormData();
 
     Object.entries(user).forEach(([key, value]) => {
@@ -90,10 +104,6 @@ export default function UpdateEditUser({
         }
       }
     });
-    frm.forEach((val, k) => {
-      console.log(k + " " + val);
-    });
-
     if (image != "/utcLogo.png") {
       let fileInput = document.getElementById("avatar") as HTMLInputElement;
       if (fileInput && fileInput.files) {
@@ -124,11 +134,16 @@ export default function UpdateEditUser({
         return;
       } else if (res.status == 409) {
         toast.error("User Name hoặc số điện thoại đã tồn tại !");
+        setIsLoading(false);
         return;
-      } else toast.error("Có lỗi xảy ra !");
+      } else {
+        setIsLoading(false);
+        toast.error("Có lỗi xảy ra !");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Có lỗi xảy ra !");
+      setIsLoading(false);
     }
   };
   const isInValid = () => {
@@ -139,7 +154,8 @@ export default function UpdateEditUser({
         !isValidVietnamesePhoneNumber(user.phone_number) ||
         user.name.length == 0 ||
         (user.pass_word.length != 0 && user.pass_word.length < 6) ||
-        user.pass_word != rePassword
+        user.pass_word != rePassword ||
+        !isValidEmail(user.email)
       );
     }
     return (
@@ -149,7 +165,8 @@ export default function UpdateEditUser({
       user.name.length == 0 ||
       user.pass_word.length < 6 ||
       rePassword.length < 6 ||
-      user.pass_word != rePassword
+      user.pass_word != rePassword ||
+      !isValidEmail(user.email)
     );
   };
   useEffect(() => {
@@ -246,6 +263,30 @@ export default function UpdateEditUser({
                       Số điện thoại không hợp lệ
                     </p>
                   )}
+              </div>
+              <div className="my-2">
+                <label
+                  htmlFor="phone_number"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Email
+                </label>
+                <input
+                  type="text"
+                  name="phone_number"
+                  id="phone_number"
+                  className={`${
+                    !isCheck.current || isValidEmail(user.email)
+                      ? " border-gray-300 "
+                      : "border-red-400 "
+                  } bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
+                  placeholder="Email"
+                  value={user.email}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                />
+                {isCheck.current && !isValidEmail(user.email) && (
+                  <p className="text-red-400 text-xs p-1">Email không hợp lệ</p>
+                )}
               </div>
               <div className="my-2 flex">
                 <div className="block me-2 text-sm font-medium text-gray-900">
@@ -427,7 +468,7 @@ export default function UpdateEditUser({
                       ? "border-red-400 "
                       : " border-gray-300 "
                   } bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                  placeholder="Giữ lại mật khẩu"
+                  placeholder={userProp ? "Giữ lại mật khẩu" : ""}
                   value={user.pass_word}
                   onChange={(e) =>
                     setUser({ ...user, pass_word: e.target.value })
@@ -458,7 +499,7 @@ export default function UpdateEditUser({
                       ? "border-red-400 "
                       : " border-gray-300 "
                   } bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                  placeholder="Giữ lại mật khẩu"
+                  placeholder={userProp ? "Giữ lại mật khẩu" : ""}
                   value={rePassword}
                   onChange={(e) => setRePassword(e.target.value)}
                 />
@@ -478,7 +519,9 @@ export default function UpdateEditUser({
                  p-3 text-sm font-medium text-white rounded bg-blue-600 mx-auto block mt-3`}
             type="submit"
           >
-            Tiến hành {userProp ? "sửa" : "thêm"} tài khoản
+            {!isLoading
+              ? ` Tiến hành ${userProp ? "sửa" : "thêm"} tài khoản`
+              : "Loading..."}
           </button>
         </form>
       </div>

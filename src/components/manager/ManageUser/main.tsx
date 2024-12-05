@@ -11,6 +11,10 @@ import { useSession } from "next-auth/react";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 
 type getUserResponse = {
   total_page: number;
@@ -394,201 +398,208 @@ export default function ManageUser({
             </tr>
           </thead>
           <tbody>
-            {false ? (
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td colSpan={100}>
-                  <div className="mx-auto p-3 text-center w-full">Loading</div>
-                </td>
-              </tr>
-            ) : (
-              users?.map((item) => {
-                return (
-                  <tr
-                    key={item.id_user}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <td className=" p-4" colSpan={5}>
-                      <div className="flex items-center">
-                        <input
-                          id="checkbox-table-search-1"
-                          type="checkbox"
-                          checked={
-                            userChoosingAll ||
-                            userChoosing.find((t) => t == item.id_user) !=
-                              undefined
-                          }
-                          onChange={(e) => {
-                            if (!e.target.checked) {
-                              setUserChoosingAll(false);
-                              setUserChoosing(
-                                userChoosing.filter((i) => i != item.id_user)
-                              );
-                            } else {
-                              if (userChoosing.length == users.length - 1) {
-                                setUserChoosingAll(true);
-                              }
-                              setUserChoosing([...userChoosing, item.id_user]);
+            {users?.map((item) => {
+              return (
+                <tr
+                  key={item.id_user}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <td className=" p-4" colSpan={5}>
+                    <div className="flex items-center">
+                      <input
+                        id="checkbox-table-search-1"
+                        type="checkbox"
+                        checked={
+                          userChoosingAll ||
+                          userChoosing.find((t) => t == item.id_user) !=
+                            undefined
+                        }
+                        onChange={(e) => {
+                          if (!e.target.checked) {
+                            setUserChoosingAll(false);
+                            setUserChoosing(
+                              userChoosing.filter((i) => i != item.id_user)
+                            );
+                          } else {
+                            if (userChoosing.length == users.length - 1) {
+                              setUserChoosingAll(true);
                             }
-                          }}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label
-                          htmlFor="checkbox-table-search-1"
-                          className="sr-only"
-                        >
-                          checkbox
-                        </label>
-                      </div>
-                    </td>
-                    <td
-                      colSpan={10}
-                      className=" px-2 py-3 text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      <span>{item.id_user}</span>
-                    </td>
-                    <td
-                      colSpan={10}
-                      className=" px-3 py-3 text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src="/utcLogo.png"
+                            setUserChoosing([...userChoosing, item.id_user]);
+                          }
+                        }}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
-                    </td>
-                    <td colSpan={25} className="px-6 py-3 w-1/4">
-                      {item.name}
-                    </td>
-                    <td colSpan={10} className="px-2 py-3">
-                      <span>{item.gender ? "Nam" : "Nữ"}</span>
-                    </td>
-                    <td colSpan={20} className="px-6 py-3">
-                      <span>{item.phone_number}</span>
-                    </td>
-                    <td colSpan={10} className="px-3 py-3">
-                      <div className="flex items-center">
-                        <div
-                          className={`h-2.5 w-2.5 rounded-full bg-${
-                            item.is_valid ? "green" : "red"
-                          }-500 me-2`}
+                      <label
+                        htmlFor="checkbox-table-search-1"
+                        className="sr-only"
+                      >
+                        checkbox
+                      </label>
+                    </div>
+                  </td>
+                  <td
+                    colSpan={10}
+                    className=" px-2 py-3 text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    <span>{item.id_user}</span>
+                  </td>
+                  <td
+                    colSpan={10}
+                    className=" px-3 py-3 text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    <img
+                      className="w-10 h-10 rounded-full"
+                      src={
+                        item?.avatar
+                          ? getWebViewLinkFromDiveId(
+                              extractFileIdFromDiveLink(item.avatar) as string
+                            )
+                          : "/utcLogo.png"
+                      }
+                    />
+                  </td>
+                  <td colSpan={25} className="px-6 py-3 w-1/4">
+                    {item.name}
+                  </td>
+                  <td colSpan={10} className="px-2 py-3">
+                    <span>{item.gender ? "Nam" : "Nữ"}</span>
+                  </td>
+                  <td colSpan={20} className="px-6 py-3">
+                    <span>{item.phone_number}</span>
+                  </td>
+                  <td colSpan={10} className="px-3 py-3">
+                    <div className="flex items-center">
+                      <div
+                        className={`h-2.5 w-2.5 rounded-full bg-${
+                          item.is_valid ? "green" : "red"
+                        }-500 me-2`}
+                      />
+                      {item.is_valid ? "Hoạt động" : "Đã khóa"}
+                    </div>
+                  </td>
+                  <td colSpan={10} className="px-6 py-3">
+                    <Link
+                      href={`./users/${item.id_user}`}
+                      className="font-medium text-blue-600 text-sm hover:underline flex items-center"
+                    >
+                      <svg
+                        fill="#000000"
+                        width="18px"
+                        height="18px"
+                        viewBox="0 0 64 64"
+                        id="Layer_1_1_"
+                        version="1.1"
+                        xmlSpace="preserve"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlnsXlink="http://www.w3.org/1999/xlink"
+                      >
+                        <g id="SVGRepo_bgCarrier" strokeWidth={0} />
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
-                        {item.is_valid ? "Hoạt động" : "Đã khóa"}
-                      </div>
-                    </td>
-                    <td colSpan={10} className="px-6 py-3">
-                      <Link
-                        href={`./users/${item.id_user}`}
-                        className="font-medium text-blue-600 text-sm hover:underline flex items-center"
-                      >
-                        <svg
-                          fill="#000000"
-                          width="18px"
-                          height="18px"
-                          viewBox="0 0 64 64"
-                          id="Layer_1_1_"
-                          version="1.1"
-                          xmlSpace="preserve"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                        >
-                          <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                          <g
-                            id="SVGRepo_tracerCarrier"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <g id="SVGRepo_iconCarrier">
-                            <g>
-                              <path d="M36,21c0-2.206-1.794-4-4-4s-4,1.794-4,4s1.794,4,4,4S36,23.206,36,21z M30,21c0-1.103,0.897-2,2-2s2,0.897,2,2 s-0.897,2-2,2S30,22.103,30,21z" />{" "}
-                              <path d="M27,41v6h10v-6h-2V27h-8v6h2v8H27z M29,31v-2h4v14h2v2h-6v-2h2V31H29z" />{" "}
-                              <path d="M32,1C14.907,1,1,14.907,1,32s13.907,31,31,31s31-13.907,31-31S49.093,1,32,1z M32,61C16.009,61,3,47.991,3,32 S16.009,3,32,3s29,13.009,29,29S47.991,61,32,61z" />{" "}
-                              <path d="M32,7c-5.236,0-10.254,1.607-14.512,4.649l1.162,1.628C22.567,10.479,27.184,9,32,9c12.682,0,23,10.318,23,23 c0,4.816-1.479,9.433-4.277,13.35l1.628,1.162C55.393,42.254,57,37.236,57,32C57,18.215,45.785,7,32,7z" />{" "}
-                              <path d="M32,55C19.318,55,9,44.682,9,32c0-4.817,1.479-9.433,4.277-13.35l-1.627-1.162C8.608,21.746,7,26.764,7,32 c0,13.785,11.215,25,25,25c5.236,0,10.254-1.607,14.512-4.649l-1.162-1.628C41.433,53.521,36.816,55,32,55z" />{" "}
-                            </g>{" "}
-                          </g>
-                        </svg>
+                        <g id="SVGRepo_iconCarrier">
+                          <g>
+                            <path d="M36,21c0-2.206-1.794-4-4-4s-4,1.794-4,4s1.794,4,4,4S36,23.206,36,21z M30,21c0-1.103,0.897-2,2-2s2,0.897,2,2 s-0.897,2-2,2S30,22.103,30,21z" />{" "}
+                            <path d="M27,41v6h10v-6h-2V27h-8v6h2v8H27z M29,31v-2h4v14h2v2h-6v-2h2V31H29z" />{" "}
+                            <path d="M32,1C14.907,1,1,14.907,1,32s13.907,31,31,31s31-13.907,31-31S49.093,1,32,1z M32,61C16.009,61,3,47.991,3,32 S16.009,3,32,3s29,13.009,29,29S47.991,61,32,61z" />{" "}
+                            <path d="M32,7c-5.236,0-10.254,1.607-14.512,4.649l1.162,1.628C22.567,10.479,27.184,9,32,9c12.682,0,23,10.318,23,23 c0,4.816-1.479,9.433-4.277,13.35l1.628,1.162C55.393,42.254,57,37.236,57,32C57,18.215,45.785,7,32,7z" />{" "}
+                            <path d="M32,55C19.318,55,9,44.682,9,32c0-4.817,1.479-9.433,4.277-13.35l-1.627-1.162C8.608,21.746,7,26.764,7,32 c0,13.785,11.215,25,25,25c5.236,0,10.254-1.607,14.512-4.649l-1.162-1.628C41.433,53.521,36.816,55,32,55z" />{" "}
+                          </g>{" "}
+                        </g>
+                      </svg>
 
-                        <span className="px-1">Chi tiết</span>
-                      </Link>
-                      <Link
-                        href={`./users/update_user/${item.id_user}`}
-                        className="font-medium text-blue-600 text-sm hover:underline flex items-center"
+                      <span className="px-1">Chi tiết</span>
+                    </Link>
+                    <Link
+                      href={`./users/update_user/${item.id_user}`}
+                      className="font-medium text-blue-600 text-sm hover:underline flex items-center"
+                    >
+                      <svg
+                        className="w-[16px] h-[16px] text-gray-800 dark:text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        <svg
-                          className="w-[16px] h-[16px] text-gray-800 dark:text-white"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
-                            clipRule="evenodd"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span className="px-1">Sửa</span>
-                      </Link>
-                      <button
-                        onClick={() => setDeleteId(item.id_user)}
-                        className="font-medium text-blue-600 text-sm hover:underline flex items-center"
+                        <path
+                          fillRule="evenodd"
+                          d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
+                          clipRule="evenodd"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="px-1">Sửa</span>
+                    </Link>
+                    <button
+                      onClick={() => setDeleteId(item.id_user)}
+                      className="font-medium text-blue-600 text-sm hover:underline flex items-center"
+                    >
+                      <svg
+                        width="16px"
+                        height="16px"
+                        viewBox="0 -0.5 21 21"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlnsXlink="http://www.w3.org/1999/xlink"
+                        fill="#000000"
                       >
-                        <svg
-                          width="16px"
-                          height="16px"
-                          viewBox="0 -0.5 21 21"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                          fill="#000000"
-                        >
-                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
                           <g
-                            id="SVGRepo_tracerCarrier"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          ></g>
-                          <g id="SVGRepo_iconCarrier">
+                            id="Page-1"
+                            stroke="none"
+                            strokeWidth="1"
+                            fill="none"
+                            fillRule="evenodd"
+                          >
                             <g
-                              id="Page-1"
-                              stroke="none"
-                              strokeWidth="1"
-                              fill="none"
-                              fillRule="evenodd"
+                              id="Dribbble-Light-Preview"
+                              transform="translate(-179.000000, -360.000000)"
+                              fill="#000000"
                             >
                               <g
-                                id="Dribbble-Light-Preview"
-                                transform="translate(-179.000000, -360.000000)"
-                                fill="#000000"
+                                id="icons"
+                                transform="translate(56.000000, 160.000000)"
                               >
-                                <g
-                                  id="icons"
-                                  transform="translate(56.000000, 160.000000)"
-                                >
-                                  <path
-                                    d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
-                                    id="delete-[#1487]"
-                                  ></path>
-                                </g>
+                                <path
+                                  d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
+                                  id="delete-[#1487]"
+                                ></path>
                               </g>
                             </g>
                           </g>
-                        </svg>
-                        <span className="px-1">Xóa</span>
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
+                        </g>
+                      </svg>
+                      <span className="px-1">Xóa</span>
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+        {users ? (
+          users.length == 0 && (
+            <p className="text-center bg-white p-5 rounded">
+              Không có user nào
+            </p>
+          )
+        ) : (
+          <p className="text-center bg-white p-5 rounded">Có lỗi xảy ra</p>
+        )}
       </div>
       {modalWarningOpen && (
         <WarningModal
@@ -613,7 +624,6 @@ export default function ManageUser({
         />
       )}
       <Pagination
-        itemsPerPage={6}
         totalPage={data?.total_page || 1}
         rootDirection={`/manager/users?${searchPr.toString()}`}
         forcePage={page ? Number(page) : 1}

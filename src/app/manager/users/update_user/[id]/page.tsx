@@ -9,7 +9,7 @@ export default async function page({ params }: { params: { id: string } }) {
   let accessToken = (await getServerSession(options))!.user!.access_token.token;
   try {
     let res = await fetch(
-      GenerateBackendURL("user/get_user" + "?user_id=" + params.id),
+      "http://localhost:8081/api/v1/user/get_user" + "?user_id=" + params.id,
       {
         headers: {
           Authorization: "Bearer " + accessToken,

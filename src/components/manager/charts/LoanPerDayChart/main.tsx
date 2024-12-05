@@ -41,8 +41,8 @@ export default function LoanPerDayChart({
     max_date ? decodeURIComponent(max_date) : undefined
   );
   const router = useRouter();
-  const minDateDebounce = useDebounce(minDate, 2000);
-  const maxDateDebounce = useDebounce(maxDate, 2000);
+  const minDateDebounce = useDebounce<String | undefined>(minDate, 2000);
+  const maxDateDebounce = useDebounce<String | undefined>(maxDate, 2000);
   useDidMountEffect(() => {
     if (!minDate) searchPr.delete("min_date");
     else searchPr.set("min_date", minDate);
@@ -114,9 +114,15 @@ export default function LoanPerDayChart({
               setMaxDate(encodeURIComponent(dat.toLocaleDateString()));
             }}
             dateConfig={{
-              initDate: max_date ? new Date(max_date) : undefined,
-              minDate: min_date ? new Date(min_date) : new Date("1/1/2000"),
-              selected: max_date ? new Date(max_date) : new Date(),
+              initDate: max_date
+                ? new Date(decodeURIComponent(max_date))
+                : undefined,
+              minDate: min_date
+                ? new Date(decodeURIComponent(min_date))
+                : new Date("1/1/2000"),
+              selected: max_date
+                ? new Date(decodeURIComponent(max_date))
+                : new Date(),
             }}
             className="!w-44"
           />

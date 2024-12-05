@@ -24,14 +24,18 @@ export const options: NextAuthOptions = {
         },
       },
       async authorize(credentials, req): Promise<any> {
-        let res: Response = await fetch(GenerateBackendURL("auth/login"), {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_name: credentials?.username,
-            pass_word: credentials?.password,
-          }),
-        });
+        let res: Response = await fetch(
+          "http://localhost:8081/api/v1/auth/login",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_name: credentials?.username,
+              pass_word: credentials?.password,
+            }),
+            cache: "no-store",
+          }
+        );
         if (!res.ok) return null;
         let user = (await res.json()) as {
           access_token: {
@@ -40,7 +44,6 @@ export const options: NextAuthOptions = {
             exp: string;
           };
           user_info: userGeneral;
-          role: string;
         };
         return {
           ...user,
@@ -66,7 +69,7 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials, req): Promise<any> {
         let res: Response = await fetch(
-          GenerateBackendURL("auth/manager_login"),
+          "http://localhost:8081/api/v1/auth/manager_login",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

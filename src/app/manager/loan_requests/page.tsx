@@ -106,7 +106,8 @@ export default async function page({
     | undefined;
   try {
     let res = await fetch(
-      GenerateBackendURL("loan-request/get_list?" + serverSearchPr.toString()),
+      "http://localhost:8081/api/v1/loan-request/get_list?" +
+        serverSearchPr.toString(),
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,

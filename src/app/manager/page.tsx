@@ -5,12 +5,11 @@ import React from "react";
 import { options } from "../api/auth/[...nextauth]/options";
 
 export default async function page() {
-  const session = await getServerSession(options);
   try {
     let res = await fetch(
-      GenerateBackendURL("document/get_number_document_of_category"),
+      "http://localhost:8081/api/v1/document/get_number_document_of_category",
       {
-        cache: "default",
+        cache: "no-store",
       }
     );
     if (res.ok) {

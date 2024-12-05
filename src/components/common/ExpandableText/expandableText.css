@@ -1,0 +1,15 @@
+.text-container {
+  @apply max-h-52 overflow-hidden relative p-2;
+}
+
+.show-more {
+  @apply flex justify-center items-center absolute bottom-0 left-0 w-full text-center text-green-700 bg-white bg-opacity-80 cursor-pointer text-lg font-medium  py-1;
+}
+
+.text-container.expanded {
+  @apply max-h-none;
+}
+
+.text-container.expanded .show-more {
+  @apply relative;
+}

@@ -2,6 +2,10 @@ import BackButton from "@/components/common/backButton/BackButton";
 import { Document } from "@/dtos/documents";
 import { GenerateBackendURL } from "@/utils/backendUrl";
 import { customFormatDate } from "@/utils/date";
+import {
+  extractFileIdFromDiveLink,
+  getWebViewLinkFromDiveId,
+} from "@/utils/handleImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -10,7 +14,8 @@ export default async function page({ params }: { params: { id: string } }) {
   let data: Document;
   try {
     let res = await fetch(
-      GenerateBackendURL("document/get_document?document_id=" + params.id),
+      "http://localhost:8081/api/v1/document/get_document?document_id=" +
+        params.id,
       { cache: "no-store" }
     );
     if (!res.ok) return notFound();
@@ -58,6 +63,25 @@ export default async function page({ params }: { params: { id: string } }) {
             defaultValue={data.publisher.publisher_name}
             className={`w-1/2 border bg-gray-50 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block  p-2.5`}
           />
+        </div>
+        <div className="flex flex-wrap">
+          {data.image?.map((item, index) => {
+            return (
+              <div className="w-3/12 mb-4 p-2" key={item.id}>
+                <div className=" p-2 bg-white border border-gray-200 rounded-lg shadow relative">
+                  <img
+                    src={
+                      getWebViewLinkFromDiveId(
+                        extractFileIdFromDiveLink(item.image) as string
+                      ) || "/logo.png"
+                    }
+                    alt=""
+                    className="h-[200px] mx-auto"
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="flex mb-3">
           <h1 className="text-lg w-1/2 font-bold">Thể loại:</h1>
