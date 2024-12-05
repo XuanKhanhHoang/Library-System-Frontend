@@ -306,7 +306,7 @@ export default function UpdateDocumentAndVariants({
         <div className="flex flex-wrap">
           {images.map((item, index) => {
             return (
-              <div className="w-3/12 mb-4 p-2">
+              <div className="w-3/12 mb-4 p-2" key={index}>
                 <div className=" p-2 bg-white border border-gray-200 rounded-lg shadow relative">
                   <img
                     src={item || "/logo.png"}

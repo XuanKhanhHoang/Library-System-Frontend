@@ -13,31 +13,33 @@ export default async function page({ params }: { params: { id: string } }) {
     document: Document;
   try {
     let response = await fetch(
-      GenerateBackendURL("document/get_document?document_id=" + params.id),{
-        cache:"no-cache"
+      "http://localhost:8081/api/v1/document/get_document?document_id=" +
+        params.id,
+      {
+        cache: "no-cache",
       }
     );
     if (!response.ok) return notFound();
     document = await response.json();
     const [categories, authors, publishers] = await Promise.all([
-      fetch(GenerateBackendURL("handle-simple-data/get_categories")).then(
-        async (res) => {
-          if (res.ok) return (await res.json()) as Category[];
-          return [];
-        }
-      ),
-      fetch(GenerateBackendURL("handle-simple-data/get_authors")).then(
+      fetch(
+        "http://localhost:8081/api/v1/handle-simple-data/get_categories"
+      ).then(async (res) => {
+        if (res.ok) return (await res.json()) as Category[];
+        return [];
+      }),
+      fetch("http://localhost:8081/api/v1/handle-simple-data/get_authors").then(
         async (res) => {
           if (res.ok) return (await res.json()) as Author[];
           return [];
         }
       ),
-      fetch(GenerateBackendURL("handle-simple-data/get_publishers")).then(
-        async (res) => {
-          if (res.ok) return (await res.json()) as Publisher[];
-          return [];
-        }
-      ),
+      fetch(
+        "http://localhost:8081/api/v1/handle-simple-data/get_publishers"
+      ).then(async (res) => {
+        if (res.ok) return (await res.json()) as Publisher[];
+        return [];
+      }),
     ]);
     data = {
       categories,

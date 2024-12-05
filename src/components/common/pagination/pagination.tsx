@@ -10,7 +10,7 @@ export default function Pagination({
   forcePage = 1,
   scrollTop = true,
 }: {
-  handlePageClick?: (event: { selected: number } & any) => void;
+  handlePageClick?: (event: { selected: number }) => void;
   totalPage: number;
   rootDirection: string;
   forcePage?: number;

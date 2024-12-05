@@ -4,10 +4,11 @@ import LoanRequests from "@/components/user/loanList/main";
 import { LoanRequestWithStatusUserName } from "@/dtos/loan_request";
 import { GenerateBackendURL } from "@/utils/backendUrl";
 import { getServerSession } from "next-auth";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function page() {
   const session = await getServerSession(options);
+  if (!session?.user?.access_token.token) return redirect("/auth/login");
   let waiting,
     newAccepted,
     fullList:

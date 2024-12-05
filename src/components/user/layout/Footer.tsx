@@ -5,34 +5,6 @@ import Link from "next/link";
 import { Mail, Phone, Facebook } from "lucide-react";
 
 export default function Footer() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted: ", formData);
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
-  };
-
-  const totalVisits = 1000;
-  const dailyVisits = 50;
-
   return (
     <footer className="bg-blue-900 text-white pb-8">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-5">
@@ -85,12 +57,11 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Thống kê truy cập</h3>
             <p>
-              Tổng số lượt truy cập:{" "}
-              <span className="font-bold">{totalVisits}</span>
+              Tổng số lượt truy cập: <span className="font-bold">{1002}</span>
             </p>
             <p>
               Số lượt truy cập trong ngày:{" "}
-              <span className="font-bold">{dailyVisits}</span>
+              <span className="font-bold">{17}</span>
             </p>
           </div>
         </div>

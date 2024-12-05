@@ -96,12 +96,11 @@ export default async function page({
   let data: GetDocumentsResponse | undefined;
   try {
     let res = await fetch(
-      GenerateBackendURL(
-        "document/get_preview_documents?" + severSearchPr.toString()
-      ),
+      "http://localhost:8081/api/v1/document/get_preview_documents?" +
+        severSearchPr.toString(),
       {
         headers: {
-          Authorization: "Bearer " + session!.user!.access_token.token,
+          Authorization: "Bearer " + session?.user?.access_token.token,
         },
         cache: "no-store",
       }

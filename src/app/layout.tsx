@@ -15,6 +15,8 @@ import { options } from "./api/auth/[...nextauth]/options";
 import { userRole } from "./api/auth/[...nextauth]/roles.enum";
 import { redirect } from "next/navigation";
 import ReduxProvider from "@/components/redux/Provider";
+import { Category } from "@/dtos/documents";
+import { GenerateBackendURL } from "@/utils/backendUrl";
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
@@ -49,14 +51,21 @@ export default async function RootLayout({
   )
     return redirect("/auth/logout");
   else if (session != null && pathname == "/auth/login") return redirect("/");
-
+  let categories: Category[] | undefined;
+  try {
+    categories = await fetch(
+      "http://localhost:8081/api/v1/handle-simple-data/get_categories"
+    ).then(async (res) => await res.json());
+  } catch (e) {
+    console.log(e);
+  }
   return (
     <html lang="en">
       <body className={inter.className}>
         <ReduxProvider>
           <NextAuthProvider>
             <ToastContainer autoClose={800} />
-            <Header userName={session?.user?.user_info.user_name} />
+            <Header user={session?.user} categories={categories} />
             <div className="max-w-screen-xl mx-auto">{children}</div>
             <Footer />
           </NextAuthProvider>

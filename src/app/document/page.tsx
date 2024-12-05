@@ -38,13 +38,13 @@ export default async function page({
   let data: GetDocumentsResponse | undefined;
   try {
     data = await fetch(
-      GenerateBackendURL(
-        `document/get_preview_documents?limit=8&page=${page || 1}&${
-          search_col == "category_id"
-            ? `category_ids=${search_term}`
-            : backendSearchParams.toString()
-        }`
-      )
+      `http://localhost:8081/api/v1/document/get_preview_documents?limit=8&page=${
+        page || 1
+      }&${
+        search_col == "category_id"
+          ? `category_ids=${search_term}`
+          : backendSearchParams.toString()
+      }`
     ).then((res) => res.json());
   } catch (error) {
     console.log(error);

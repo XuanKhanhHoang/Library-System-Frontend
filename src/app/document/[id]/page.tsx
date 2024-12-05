@@ -28,7 +28,11 @@ export default async function page({
   if (!params || !params.id || isNaN(Number(params.id))) return notFound();
   try {
     let res = await fetch(
-      GenerateBackendURL("document/get_document?document_id=" + params.id)
+      "http://localhost:8081/api/v1/document/get_document?document_id=" +
+        params.id,
+      {
+        cache: "no-store",
+      }
     );
     if (!res.ok)
       return (
@@ -80,7 +84,12 @@ export default async function page({
               <span className="text-lg font-medium"> Mô tả</span>
               <ExpandableText text={data.description || ""} />
             </div>
-            <DocumentDetailButton document_id={params.id} />
+            <DocumentDetailButton
+              document_id={params.id}
+              quantity={
+                data.variants.find((item) => item.quantity > 0) != undefined
+              }
+            />
           </div>
         </div>
       </div>

@@ -10,9 +10,11 @@ import { toast } from "react-toastify";
 export default function ViewRequest({
   data,
   access_token,
+  action = true,
 }: {
   data: LoanRequestForItem;
   access_token: string;
+  action?: boolean;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -107,9 +109,9 @@ export default function ViewRequest({
           </div>
         </div>
         <div className="flex mb-4 items-center">
-          <h1 className="text-lg w-1/2 font-bold">Ngày nhận:</h1>
+          <h1 className="text-lg w-1/2 font-bold">Ngày nhận dự kiến:</h1>
           <span className="w-1/2">
-            {customFormatDate(new Date(data.expected_date))}
+            {customFormatDate(new Date(data.expected_date), false)}
           </span>
         </div>
         <h1 className="text-lg  font-bold">Danh sách mượn:</h1>
@@ -147,7 +149,7 @@ export default function ViewRequest({
           </tbody>
         </table>
 
-        {data.status_id == 1 && (
+        {!action && data.status_id == 1 && (
           <>
             {" "}
             <div className="flex my-4 justify-center">

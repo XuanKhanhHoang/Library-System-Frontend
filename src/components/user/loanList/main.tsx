@@ -122,7 +122,7 @@ export default function LoanRequests({
                   </td>
                   <td className="px-3 py-4">
                     <span>
-                      {customFormatDate(new Date(item.expected_date))}
+                      {customFormatDate(new Date(item.expected_date), false)}
                     </span>
                   </td>
                   <td className="px-3 py-4">
@@ -130,7 +130,7 @@ export default function LoanRequests({
                   </td>
                   <td className="px-2 py-4 flex flex-col">
                     <Link
-                      href={`loan_requests/${item.id_loan_request}`}
+                      href={`/loan_requests/${item.id_loan_request}`}
                       className="font-medium mt-2 rounded text-blue-600 text-sm hover:underline flex items-center p-2 border w-40"
                     >
                       <svg
@@ -163,7 +163,12 @@ export default function LoanRequests({
 
                       <span className="px-1">Chi tiết</span>
                     </Link>
-                    <button className="font-medium mt-2 rounded text-blue-600 text-sm hover:underline flex items-center p-2 border w-fit">
+                    <button
+                      onClick={() => {
+                        setRequestChosen(item.id_loan_request);
+                      }}
+                      className="font-medium mt-2 rounded text-blue-600 text-sm hover:underline flex items-center p-2 border w-fit"
+                    >
                       <svg
                         fill="#000000"
                         width="18px"
@@ -271,7 +276,7 @@ export default function LoanRequests({
                   </td>
                   <td className="px-3 py-4">
                     <span>
-                      {customFormatDate(new Date(item.expected_date))}
+                      {customFormatDate(new Date(item.expected_date), false)}
                     </span>
                   </td>
                   <td className="px-3 py-4">
@@ -386,7 +391,7 @@ export default function LoanRequests({
                   </td>
                   <td className="px-3 py-4">
                     <span>
-                      {customFormatDate(new Date(item.expected_date))}
+                      {customFormatDate(new Date(item.expected_date), false)}
                     </span>
                   </td>
                   <td className="px-3 py-4">

@@ -8,12 +8,15 @@ import React from "react";
 export default async function page() {
   const session = await getServerSession(options);
   try {
-    let res = await fetch(GenerateBackendURL("user/get_number_user_of_type"), {
-      cache: "default",
-      headers: {
-        Authorization: "Bearer " + session!.user!.access_token.token,
-      },
-    });
+    let res = await fetch(
+      "http://localhost:8081/api/v1/user/get_number_user_of_type",
+      {
+        cache: "default",
+        headers: {
+          Authorization: "Bearer " + session!.user!.access_token.token,
+        },
+      }
+    );
     if (res.ok) {
       return (
         <div className="w-full">

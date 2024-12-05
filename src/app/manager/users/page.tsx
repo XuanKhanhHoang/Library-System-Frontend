@@ -56,17 +56,7 @@ export default async function page({
       severSearchPr.append("is_valid", isValid);
     } else return notFound();
   }
-  if (order_type) {
-    if (order_type === "asc" || order_type === "desc")
-      searchPr.append("order_type", order_type);
-    else return notFound();
-  }
-  if (order_col) {
-    if (order_col === "name" || order_col == "user_id") {
-      searchPr.append("order_col", order_col);
-      severSearchPr.append("sort_by_col", order_col);
-    } else return notFound();
-  }
+
   if (gender) {
     if (gender === "true" || gender === "false") {
       searchPr.append("gender", gender);
@@ -101,14 +91,26 @@ export default async function page({
     severSearchPr.append("name", search_term);
   }
   if (order_col) {
-    severSearchPr.append("sort_by_col", order_type || "asc");
+    if (order_col === "name" || order_col == "user_id") {
+      searchPr.append("order_col", order_col);
+      severSearchPr.append(
+        "sort_by_col",
+        order_col != "user_id" ? order_col : "id_user"
+      );
+      severSearchPr.append("sort_type", order_type || "asc");
+    }
+  }
+  if (order_type) {
+    if (order_type === "asc" || order_type === "desc")
+      searchPr.append("order_type", order_type);
   }
   severSearchPr.append("page", page || "1");
   const session = await getServerSession(options);
   let data: getUserResponse | undefined;
   try {
     let res = await fetch(
-      GenerateBackendURL("user/manager/get_users?" + severSearchPr.toString()),
+      "http://localhost:8081/api/v1/user/manager/get_users?" +
+        severSearchPr.toString(),
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,

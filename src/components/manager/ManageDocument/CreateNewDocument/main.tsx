@@ -48,7 +48,7 @@ export default function CreateNewDocument({
   const handleCreate = async () => {
     if (isLoading) return;
     if (name.length == 0 || categoryList.length == 0 || variantList.length == 0)
-      return toast.error("Vui lòng nhập đúng dữ liệu");
+      return toast.error("Vui lòng nhập đủ dữ liệu");
     for (let i = 0; i < variantList.length; i++) {
       let item = variantList[i];
       if (!item.name || item.price == 0 || item.isbn.length == 0)
@@ -79,6 +79,10 @@ export default function CreateNewDocument({
       });
       if (!res.ok) {
         setIsLoading(false);
+        if (res.status == 409) {
+          toast.error("Có một tài liệu với isbn đã tồn tại");
+          return;
+        }
         toast.error("Có lỗi xảy ra");
         return;
       }
@@ -88,6 +92,7 @@ export default function CreateNewDocument({
       return;
     } catch (error) {
       toast.error("Có lỗi xảy ra");
+      setIsLoading(false);
     }
   };
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,7 +156,7 @@ export default function CreateNewDocument({
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value.trim())}
+            onChange={(e) => setName(e.target.value + "")}
             className={`w-1/2 border bg-gray-50 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block  p-2.5`}
           />
         </div>
@@ -318,7 +323,7 @@ export default function CreateNewDocument({
           <div className="flex flex-wrap">
             {images.map((item, index) => {
               return (
-                <div className="w-3/12 mb-4 p-2">
+                <div className="w-3/12 mb-4 p-2" key={index}>
                   <div className=" p-2 bg-white border border-gray-200 rounded-lg shadow relative">
                     <img
                       src={item || "/logo.png"}
@@ -377,7 +382,7 @@ export default function CreateNewDocument({
                 type="file"
                 id="img_add"
                 className="invisible "
-                accept=".jpeg,.png,.webp"
+                accept=".jpeg,.png,.webp,.jpg"
                 onChange={onImageChange}
               />
             </div>

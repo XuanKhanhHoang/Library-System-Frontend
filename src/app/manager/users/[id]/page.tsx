@@ -15,7 +15,7 @@ export default async function page({ params }: { params: { id: string } }) {
   let accessToken = (await getServerSession(options))!.user!.access_token.token;
   try {
     let res = await fetch(
-      GenerateBackendURL("user/get_user" + "?user_id=" + params.id),
+      "http://localhost:8081/api/v1/user/get_user" + "?user_id=" + params.id,
       {
         headers: {
           Authorization: "Bearer " + accessToken,
@@ -43,6 +43,7 @@ export default async function page({ params }: { params: { id: string } }) {
         id_major: number;
         major_name: string;
       };
+      email: string;
     } = await res.json();
     return (
       <>
@@ -108,6 +109,23 @@ export default async function page({ params }: { params: { id: string } }) {
                 className={` bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
                 placeholder="User Name"
                 defaultValue={user.user_name}
+                readOnly
+              />
+            </div>
+            <div className="my-2">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Email
+              </label>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                className={` bg-gray-50 border  text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
+                placeholder="Email"
+                defaultValue={user.email}
                 readOnly
               />
             </div>

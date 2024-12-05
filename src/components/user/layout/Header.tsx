@@ -15,9 +15,28 @@ import {
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/components/redux/store";
 import { refreshReservation } from "@/components/redux/feature/documentReservation";
+import { Category } from "@/dtos/documents";
+import { userGeneral } from "@/dtos/user";
+import { GenerateBackendURL } from "@/utils/backendUrl";
+import { refreshMarkedDocument } from "@/components/redux/feature/markedDocument";
 
-export default function Header({ userName }: { userName?: string }) {
+export default function Header({
+  user,
+  categories,
+}: {
+  user?: {
+    access_token: {
+      token: string;
+      iat: string;
+      exp: string;
+    };
+    user_info: userGeneral;
+    role: string;
+  };
+  categories?: Category[];
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [categoryOpen, SetCategoryOpen] = useState(false);
   const [searchCol, setSearchCol] = useState<
     "name" | "author_name" | "category_name"
   >("name");
@@ -28,12 +47,32 @@ export default function Header({ userName }: { userName?: string }) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (pathname != "/document") return;
-    setSearchCol((query.get("search_col") as any) || "name");
-    setSearchTerm(query.get("search_term") || "");
+    let sCol = query.get("search_col") as any;
+    if (sCol == "category_id") sCol = undefined;
+    setSearchCol(sCol || "name");
+    setSearchTerm((sCol != undefined ? query.get("search_term") : "") || "");
   }, [query]);
   useEffect(() => {
-    dispatch(refreshReservation());
+    if (user && user.access_token.token) dispatch(refreshReservation());
+    if (user?.access_token.token) {
+      GetMarkedDocument();
+    }
   }, []);
+  const GetMarkedDocument = async () => {
+    try {
+      let data = await fetch(
+        GenerateBackendURL("user/get_marked_documents_id"),
+        {
+          headers: {
+            Authorization: "Bearer " + user!.access_token.token,
+          },
+        }
+      ).then((res) => res.json() as Promise<{ document_id: number }[]>);
+      dispatch(refreshMarkedDocument(data.map((item) => item.document_id)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <nav className="bg-white border-b border-amber-50 w-full">
       <div className=" max-w-screen-xl mx-auto px-4 py-2.5">
@@ -86,7 +125,7 @@ export default function Header({ userName }: { userName?: string }) {
             Trang chủ
           </Link>
           <Link
-            href="/gioi-thieu"
+            href="/introduction"
             className="text-gray-600 font-medium text-lg p-2 px-4"
           >
             Giới thiệu
@@ -97,33 +136,105 @@ export default function Header({ userName }: { userName?: string }) {
           >
             Dịch vụ
           </Link>
-
-          {userName ? (
+          <div className="relative">
+            <button
+              className="flex flex-row"
+              onClick={() => SetCategoryOpen(!categoryOpen)}
+            >
+              <svg
+                width="25px"
+                height="25px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <g id="SVGRepo_iconCarrier">
+                  {" "}
+                  <path
+                    d="M5 6H12H19M5 12H19M5 18H19"
+                    stroke="#000000"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                  />{" "}
+                </g>
+              </svg>
+              <span className="ms-1">Thể loại</span>
+            </button>
+            {categoryOpen && (
+              <ClickOutside onClick={() => SetCategoryOpen(!categoryOpen)}>
+                <ul className="absolute left-0 mt-4 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
+                  {categories?.map((item) => {
+                    return (
+                      <li key={item.id_category}>
+                        <Link
+                          className=" block border-b px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                          href={
+                            "/document?search_col=category_id&search_term=" +
+                            item.id_category
+                          }
+                        >
+                          {item.category_name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </ClickOutside>
+            )}
+          </div>
+          {user?.user_info.user_name ? (
             <>
-              <div className="relative !ml-auto !mr-7 bg-blue-600 p-2 rounded ">
+              <div className="relative !ml-auto !mr-7 bg-blue-600 p-2 rounded min-w-32">
                 <div
                   className="flex items-center text-gray-600 cursor-pointer"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <User size={24} className="mr-2 text-white" />
-                  <span className="font-medium text-white">{userName}</span>
+                  <span className="font-medium text-white">
+                    {user.user_info.user_name}
+                  </span>
                 </div>
 
                 {isMenuOpen && (
                   <ClickOutside onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     <div className="absolute -left-12 mt-4 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
                       <ul className="py-1">
-                        <li className=" border-b px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
-                          <Link href={"/user"}>Thông tin tài khoản</Link>
+                        <li>
+                          <Link
+                            className=" block border-b px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                            href={"/user"}
+                          >
+                            Thông tin tài khoản
+                          </Link>
                         </li>
-                        <li className="px-4 border-b py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
-                          <Link href={"/document_reservations"}>
+                        <li>
+                          <Link
+                            className="block px-4 border-b py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                            href={"/document_reservations"}
+                          >
                             Danh sách tài liệu chờ mượn
                           </Link>
                         </li>
-                        <li className="px-4 border-b py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
-                          <Link href="/loan_requests">
+                        <li>
+                          <Link
+                            className=" block px-4 border-b py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                            href="/loan_requests"
+                          >
                             Danh sách lịch mượn sách đã đặt
+                          </Link>
+                        </li>{" "}
+                        <li>
+                          <Link
+                            className=" block px-4 border-b py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                            href="/loan_return_transaction"
+                          >
+                            Lịch sử mượn tài liệu
                           </Link>
                         </li>
                         <li

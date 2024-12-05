@@ -14,7 +14,8 @@ export default async function page({ params }: { params: { id: string } }) {
   let data: Document;
   try {
     let res = await fetch(
-      GenerateBackendURL("document/get_document?document_id=" + params.id),
+      "http://localhost:8081/api/v1/document/get_document?document_id=" +
+        params.id,
       { cache: "no-store" }
     );
     if (!res.ok) return notFound();
@@ -66,7 +67,7 @@ export default async function page({ params }: { params: { id: string } }) {
         <div className="flex flex-wrap">
           {data.image?.map((item, index) => {
             return (
-              <div className="w-3/12 mb-4 p-2">
+              <div className="w-3/12 mb-4 p-2" key={item.id}>
                 <div className=" p-2 bg-white border border-gray-200 rounded-lg shadow relative">
                   <img
                     src={

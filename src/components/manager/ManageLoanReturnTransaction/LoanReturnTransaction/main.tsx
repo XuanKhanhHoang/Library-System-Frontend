@@ -28,7 +28,7 @@ export default function LoanReturnTransactionDetail({
         <div className="flex mb-4 items-center">
           <h1 className="text-lg w-1/2 font-bold">Ngày hạn trả:</h1>
           <span className="w-1/2">
-            {customFormatDate(new Date(data.due_date))}
+            {customFormatDate(new Date(data.due_date), false)}
           </span>
         </div>
         <div className="flex mb-4 items-center">

@@ -9,9 +9,9 @@ export default async function page() {
   let session = (await getServerSession(options))!.user!;
   try {
     let res = await fetch(
-      GenerateBackendURL(
-        "user/get_user" + "?user_id=" + session.user_info.id_user
-      ),
+      "http://localhost:8081/api/v1/user/get_user" +
+        "?user_id=" +
+        session.user_info.id_user,
       {
         headers: {
           Authorization: "Bearer " + session.access_token.token,

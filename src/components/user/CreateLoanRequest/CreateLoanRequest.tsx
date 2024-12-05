@@ -200,7 +200,7 @@ export default function CreateLoanRequest({
             className="!w-full"
           />
         </div>
-        <div className=" w-full my-3 flex flex-row items-center justify-between">
+        {/* <div className=" w-full my-3 flex flex-row items-center justify-between">
           <h3 className="font-semibold me-2">Kì hạn mượn: </h3>
           <select
             className=" w-1/2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block  p-2"
@@ -215,7 +215,7 @@ export default function CreateLoanRequest({
             <option value="12">12 tháng</option>
             <option value="24">24 tháng</option>
           </select>
-        </div>
+        </div> */}
         <hr className="my-4" />
         <button
           onClick={handleMakeReservation}

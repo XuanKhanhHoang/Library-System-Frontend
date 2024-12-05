@@ -9,7 +9,8 @@ export default async function page({ params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(options);
     let res = await fetch(
-      GenerateBackendURL("loan-return-transaction/get_item?id=" + params.id),
+      "http://localhost:8081/api/v1/loan-return-transaction/get_item?id=" +
+        params.id,
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,

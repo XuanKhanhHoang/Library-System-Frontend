@@ -9,14 +9,14 @@ export default async function page({ params }: { params: { id: string } }) {
   if (!params || !params.id || isNaN(Number(params.id))) return notFound();
   const [session, suppliers, document] = await Promise.all([
     getServerSession(options),
-    fetch(GenerateBackendURL("handle-simple-data/get_suppliers")).then(
+    fetch("http://localhost:8081/api/v1/handle-simple-data/get_suppliers").then(
       async (res) => {
         if (res.ok) return (await res.json()) as Supplier[];
         return [];
       }
     ),
     fetch(
-      GenerateBackendURL(`document/get_document?document_id=${params.id}`)
+      `http://localhost:8081/api/v1/document/get_document?document_id=${params.id}`
     ).then(async (res) => {
       if (res.ok)
         return (await res.json()) as {

@@ -11,9 +11,9 @@ export default async function page() {
   let session = await getServerSession(options);
   try {
     let res = await fetch(
-      GenerateBackendURL(
-        "user/get_user" + "?user_id=" + session!.user?.user_info.id_user
-      ),
+      "http://localhost:8081/api/v1/user/get_user" +
+        "?user_id=" +
+        session!.user?.user_info.id_user,
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,
@@ -115,17 +115,6 @@ export default async function page() {
                 readOnly
               />
             </div>
-            <div className="my-2 flex justify-between items-center">
-              <label className="w-2/12 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Trạng thái:
-              </label>
-              <input
-                type="text"
-                className={` border bg-gray-50 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                defaultValue={user.gender ? "Đang hoạt động" : "Đã khóa"}
-                readOnly
-              />
-            </div>
 
             <div className="my-2 flex items-center justify-between">
               <label className=" w-2/12 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -145,7 +134,10 @@ export default async function page() {
               <input
                 type="text"
                 className={` border bg-gray-50 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                defaultValue={customFormatDate(new Date(user.birth_date))}
+                defaultValue={customFormatDate(
+                  new Date(user.birth_date),
+                  false
+                )}
                 readOnly
               />
             </div>

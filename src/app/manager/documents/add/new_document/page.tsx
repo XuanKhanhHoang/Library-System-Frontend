@@ -9,30 +9,30 @@ export default async function page() {
   let data = undefined;
   try {
     const [categories, authors, suppliers, publishers] = await Promise.all([
-      fetch(GenerateBackendURL("handle-simple-data/get_categories")).then(
-        async (res) => {
-          if (res.ok) return (await res.json()) as Category[];
-          return [];
-        }
-      ),
-      fetch(GenerateBackendURL("handle-simple-data/get_authors")).then(
+      fetch(
+        "http://localhost:8081/api/v1/handle-simple-data/get_categories"
+      ).then(async (res) => {
+        if (res.ok) return (await res.json()) as Category[];
+        return [];
+      }),
+      fetch("http://localhost:8081/api/v1/handle-simple-data/get_authors").then(
         async (res) => {
           if (res.ok) return (await res.json()) as Author[];
           return [];
         }
       ),
-      fetch(GenerateBackendURL("handle-simple-data/get_suppliers")).then(
-        async (res) => {
-          if (res.ok) return (await res.json()) as Supplier[];
-          return [];
-        }
-      ),
-      fetch(GenerateBackendURL("handle-simple-data/get_publishers")).then(
-        async (res) => {
-          if (res.ok) return (await res.json()) as Publisher[];
-          return [];
-        }
-      ),
+      fetch(
+        "http://localhost:8081/api/v1/handle-simple-data/get_suppliers"
+      ).then(async (res) => {
+        if (res.ok) return (await res.json()) as Supplier[];
+        return [];
+      }),
+      fetch(
+        "http://localhost:8081/api/v1/handle-simple-data/get_publishers"
+      ).then(async (res) => {
+        if (res.ok) return (await res.json()) as Publisher[];
+        return [];
+      }),
     ]);
     data = {
       categories,

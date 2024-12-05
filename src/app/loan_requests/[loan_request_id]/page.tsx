@@ -15,7 +15,8 @@ export default async function page({
   const session = await getServerSession(options);
   try {
     let res = await fetch(
-      GenerateBackendURL("loan-request/get_item?id=" + params.loan_request_id),
+      "http://localhost:8081/api/v1/loan-request/get_user_item?id=" +
+        params.loan_request_id,
       {
         headers: {
           Authorization: "Bearer " + session!.user!.access_token.token,
